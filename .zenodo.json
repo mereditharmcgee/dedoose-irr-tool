@@ -1,0 +1,25 @@
+{
+  "title": "Dedoose Inter-Rater Reliability Tool",
+  "description": "A browser-based, client-side calculator for inter-rater reliability (Cohen's and Fleiss kappa) from Dedoose .docx coded-document exports. All file parsing, kappa computation, and report generation happen locally in the browser; no participant data is uploaded.",
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "MIT",
+  "creators": [
+    { "name": "McGee, Meredith" }
+  ],
+  "keywords": [
+    "inter-rater reliability",
+    "Cohen's kappa",
+    "Fleiss kappa",
+    "qualitative research",
+    "Dedoose",
+    "public health"
+  ],
+  "related_identifiers": [
+    {
+      "relation": "isSupplementTo",
+      "scheme": "url",
+      "identifier": "https://github.com/mereditharmcgee/dedoose-irr-tool"
+    }
+  ]
+}

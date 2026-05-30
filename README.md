@@ -40,11 +40,13 @@ These are intentionally out of scope. See [`docs/roadmap.md`](docs/roadmap.md) f
 - Charts or heatmaps beyond the colour-coded table
 - Code grouping or hierarchy (codes are treated as flat)
 
-## Privacy
+## Privacy and de-identification
 
-This tool is built for IRB-protected qualitative interview data. Everything — parsing, the kappa math, and generating the xlsx and docx — runs in your browser with no network calls. There is no analytics, no tracking, and no backend. The only thing stored is two UI preferences (your threshold and light/dark choice) in your browser's local storage.
+This tool is built for IRB-protected qualitative interview data. All parsing, the kappa math, and generating the xlsx and docx run in your browser with no network calls. There is no analytics, no tracking, and no backend. The only thing stored is two UI preferences (your threshold and your light or dark choice) in your browser's local storage.
 
-> **Do not commit real interview files.** If you fork this repo, the `.gitignore` already excludes `*.docx`, `*.vtt`, `*.m4a`, and `transcripts/`. The only `.docx` files in the repo are the synthetic fixtures in `test/fixtures/`, which contain invented text. Keep it that way.
+> **De-identify your transcripts before you use this tool.** Local processing keeps your files on your own machine, but the tool does not remove names or identifying details for you. Strip participant identifiers from your transcripts first, in line with your IRB protocol. Local processing protects the file; it does not anonymize the content.
+
+> **Never commit real interview files.** If you fork this repo, the `.gitignore` already excludes `*.docx`, `*.vtt`, `*.m4a`, and `transcripts/`. The only `.docx` files in the repo are the synthetic fixtures in `test/fixtures/`, which contain invented text. Keep it that way.
 
 ## Run locally
 
@@ -81,11 +83,16 @@ To instead host this repo on its own GitHub Pages site, activate the deploy work
 
 ## How to cite
 
-If you use this tool in published work, cite it with a version and (once set up) a Zenodo DOI:
+A [`CITATION.cff`](CITATION.cff) file is included, so GitHub shows a "Cite this repository" button with formatted citations. Until a DOI is minted, cite the software and version:
 
-> McGee, M. (2026). *Dedoose Inter-Rater Reliability Tool* (v1.0.0) [Software]. https://github.com/<your-org>/<your-repo>
+> McGee, M. (2026). *Dedoose Inter-Rater Reliability Tool* (v1.0.0) [Software]. https://github.com/mereditharmcgee/dedoose-irr-tool
 
-Minting a DOI is a few clicks: connect the GitHub repo to [Zenodo](https://zenodo.org), then cut a release. Zenodo archives the release and issues a citable DOI. Add it here when you have it.
+To mint a citable DOI with [Zenodo](https://zenodo.org):
+
+1. Sign in to Zenodo with your GitHub account.
+2. In Zenodo's GitHub settings, flip the toggle for `dedoose-irr-tool` to on.
+3. Create a release on GitHub (for example `v1.0.0`). Zenodo archives that release and issues a DOI. The included `.zenodo.json` supplies the record's title, authors, and license automatically.
+4. Add the DOI badge to the top of this README and the `identifiers:` entry to `CITATION.cff`.
 
 ## Contributing
 

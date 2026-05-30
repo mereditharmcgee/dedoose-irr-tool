@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this software in published work, please cite it."
+title: "Dedoose Inter-Rater Reliability Tool"
+abstract: >-
+  A browser-based, client-side calculator for inter-rater reliability
+  (Cohen's and Fleiss kappa) from Dedoose .docx coded-document exports.
+  All file parsing, kappa computation, and report generation happen
+  locally in the browser; no participant data is uploaded.
+type: software
+authors:
+  - family-names: McGee
+    given-names: Meredith
+    # Add your ORCID here once you have one: orcid: "https://orcid.org/0000-0000-0000-0000"
+version: 1.0.0
+date-released: 2026-05-30
+license: MIT
+repository-code: "https://github.com/mereditharmcgee/dedoose-irr-tool"
+url: "https://meredithmcgee.org/tools/kappa/"
+keywords:
+  - inter-rater reliability
+  - Cohen's kappa
+  - Fleiss kappa
+  - qualitative research
+  - Dedoose
+  - public health
+# After Zenodo mints a DOI, add it so citations resolve to the archived release:
+# identifiers:
+#   - type: doi
+#     value: "10.5281/zenodo.XXXXXXX"
+#     description: "Concept DOI (always resolves to the latest version)"

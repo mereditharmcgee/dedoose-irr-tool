@@ -1,0 +1,26 @@
+{
+  "name": "dedoose-irr-tool",
+  "version": "1.0.0",
+  "description": "Browser-based inter-rater reliability calculator for Dedoose docx exports. Cohen's and Fleiss kappa, fully client-side.",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "fixtures": "node test/fixtures/build_fixtures.js"
+  },
+  "dependencies": {
+    "docx": "^9.0.2",
+    "exceljs": "^4.4.0",
+    "file-saver": "^2.0.5",
+    "jszip": "^3.10.1"
+  },
+  "devDependencies": {
+    "@xmldom/xmldom": "^0.9.10",
+    "vite": "^6.0.0",
+    "vitest": "^2.1.0"
+  }
+}

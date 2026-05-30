@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dedoose IRR Tool — Inter-Rater Reliability for Qualitative Coding</title>
+    <meta
+      name="description"
+      content="Calculate Cohen's and Fleiss kappa from Dedoose docx exports, entirely in your browser. No upload, no accounts."
+    />
+    <link rel="stylesheet" href="/src/styles/main.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <div class="header-top">
+          <h1>Dedoose Inter-Rater Reliability</h1>
+          <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode">
+            Dark
+          </button>
+        </div>
+        <p class="lede">
+          Drop two or three coded Dedoose <code>.docx</code> exports of the same transcript and get
+          per-code Cohen's or Fleiss kappa, a publication-ready xlsx report, and a calibration
+          document for the passages where your coders disagreed.
+        </p>
+        <p class="privacy">
+          <strong>Everything runs in your browser.</strong> Your files are never uploaded, never
+          sent to a server, and never stored. Refresh the page and it is gone. Safe for IRB-protected
+          interview data.
+        </p>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section
+        id="dropzone"
+        class="dropzone"
+        tabindex="0"
+        role="button"
+        aria-label="Drop Dedoose docx files here or click to browse"
+      >
+        <div class="dropzone-inner">
+          <p class="dropzone-title">Drop 2 or 3 Dedoose <code>.docx</code> files here</p>
+          <p class="dropzone-sub">or click to browse. The number of files sets the number of coders.</p>
+        </div>
+        <input id="file-input" type="file" accept=".docx" multiple hidden />
+      </section>
+
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+
+      <section id="results" class="results" hidden>
+        <div id="headline"></div>
+
+        <div class="controls">
+          <div class="downloads">
+            <button id="download-xlsx" type="button" class="btn btn-primary">
+              Download kappa report (xlsx)
+            </button>
+            <button id="download-docx" type="button" class="btn">
+              Download calibration document (docx)
+            </button>
+          </div>
+          <div class="threshold">
+            <label for="threshold-slider">
+              Calibration threshold: <span id="threshold-value">0.40</span>
+            </label>
+            <input
+              id="threshold-slider"
+              type="range"
+              min="0"
+              max="1"
+              step="0.05"
+              value="0.4"
+            />
+            <span class="threshold-hint">Codes below this kappa go in the calibration document.</span>
+          </div>
+        </div>
+
+        <div id="results-table"></div>
+        <div id="summary-stats"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <p>
+          Client-side only. No telemetry. Cohen's and Fleiss kappa, Landis-Koch (1977) interpretation.
+          Do not commit real interview files to any repository.
+        </p>
+      </div>
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

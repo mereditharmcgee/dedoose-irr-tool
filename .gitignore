@@ -1,0 +1,28 @@
+# --- Real participant data must NEVER be committed ---
+# This tool is used with IRB-protected qualitative interview data.
+# Synthetic fixtures live in test/fixtures/ and are committed deliberately;
+# everything else matching these patterns is ignored by default.
+*.docx
+*.vtt
+*.m4a
+*.mp3
+*.wav
+transcripts/
+
+# Allow the synthetic test fixtures (the ONLY docx files that belong in the repo)
+!test/fixtures/*.docx
+
+# --- Build + dependency artifacts ---
+node_modules/
+dist/
+.vite/
+
+# Derived validation CSVs (regenerate with node docs/validation/export_for_r.mjs)
+docs/validation/*.csv
+
+# --- Editor / OS cruft ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log

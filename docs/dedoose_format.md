@@ -50,3 +50,18 @@ If a future Dedoose export genuinely warrants the literal intersection reading (
 These are computed at the **paragraph** level, not the character level. For a given code, we collect, per coder, the set of anchor paragraphs they tagged with that code. For each paragraph in the union, if some but not all coders tagged it, that paragraph is a disagreement passage, labelled with who applied the code (green) and who did not (red).
 
 Character-level kappa and paragraph-level disagreement passages can therefore tell slightly different stories: a code can have a low kappa from differing character ranges even while both coders anchored it to the same paragraphs (in which case the calibration document notes there are no paragraph-level disagreements to review).
+
+## Confidence intervals (and the unit-of-analysis trap)
+
+Scoring agreement character by character creates a statistical trap for confidence intervals. Adjacent characters inside a coded segment are almost perfectly correlated, so the character count massively overstates the amount of independent information. A naive CI (an asymptotic formula, or a character-level bootstrap) therefore reports absurdly tight intervals on the order of plus or minus a few hundredths, including the nonsensical `[1.000, 1.000]` for a perfectly agreed code. That is consistent with what R would produce on the same character vectors, but it is not honest: the model assumption (independent observations) is wrong.
+
+This tool instead reports a **bootstrap clustered by coding segment** (a block bootstrap), and only for the **overall pooled kappa**:
+
+- The common window is collapsed into the maximal runs over which no coder's coding changes (`segmentize` in [`src/kappa/intervals.js`](../src/kappa/intervals.js)). These segments are the natural decision units.
+- The bootstrap resamples whole segments with replacement, recomputes kappa, and takes the percentile interval. This respects within-segment dependence and produces honestly wider intervals. It is defensible in a methods section as "bootstrap confidence intervals clustered by coding segment to account for within-segment dependence." A fixed seed makes the interval reproducible.
+- **Per-code CIs are not reported.** A single transcript rarely contains enough independent coding segments to estimate them; a four-segment code yields an interval near the full `[-1, 1]` range, which is just noise. Per-code intervals are properly a multi-transcript analysis.
+- Codes (or a pooled estimate) with no variation in agreement have no interval to estimate and report nothing.
+
+The retained asymptotic `cohensKappaCI` (Fleiss, Cohen & Everitt 1969) exists only so the test suite can confirm the variance formula matches R's `vcd::Kappa` on a classic 2x2; the app does not display it.
+
+The genuinely rigorous answer for the reliability of freely unitized continuous text is Krippendorff's unitizing alpha (alpha_U), which is on the roadmap.

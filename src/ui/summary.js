@@ -1,10 +1,13 @@
 // Headline (pooled kappa) and bottom summary statistics.
 
-import { formatKappa, formatPercent, tierClass } from '../output/format.js';
+import { formatKappa, formatPercent, formatCI, tierClass } from '../output/format.js';
 
 export function renderHeadline(container, analysis) {
-  const { result, interpretation } = analysis.pooled;
+  const { result, interpretation, ci } = analysis.pooled;
   const methodLabel = analysis.method === 'cohen' ? "Cohen's kappa" : "Fleiss' kappa";
+  const ciLine = ci
+    ? `<span class="muted">95% CI ${formatCI(ci)}</span>`
+    : '';
 
   container.className = 'headline';
   container.innerHTML = `
@@ -13,6 +16,7 @@ export function renderHeadline(container, analysis) {
       <span class="interp-pill ${tierClass(interpretation.tier)}">${interpretation.label}</span>
       <span class="muted">Overall pooled ${methodLabel} across ${analysis.codeCount} codes</span>
       <span class="muted">${formatPercent(result.rawAgreement)} raw agreement &middot; ${analysis.nRaters} coders</span>
+      ${ciLine}
     </div>
   `;
 }

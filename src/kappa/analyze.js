@@ -14,6 +14,20 @@
 import { cohensKappa } from './cohens.js';
 import { fleissKappa } from './fleiss.js';
 import { interpretKappa } from './interpret.js';
+import { clusterBootstrapKappaCI } from './intervals.js';
+
+// Confidence interval via a bootstrap clustered by coding segment (see
+// intervals.js for why character-level CIs are not used). perCodeArrays is a
+// list over codes, each entry [coverageArray per coder]. Returns null when
+// kappa is undefined or there is no variation in agreement to resample.
+function kappaCI(perCodeArrays, kappa, nRaters) {
+  if (kappa === null) return null;
+  const kappaOf =
+    nRaters === 2
+      ? (arrs) => cohensKappa(arrs[0], arrs[1]).kappa
+      : (arrs) => fleissKappa(arrs).kappa;
+  return clusterBootstrapKappaCI(perCodeArrays, kappaOf);
+}
 
 // Build the character-level boolean coverage matrices shared by analyze() and
 // the R validation exporter. Exposed so both compute kappa on identical input.
@@ -63,6 +77,9 @@ export function analyze(coders) {
       name: code,
       result,
       interpretation: interpretKappa(result.kappa),
+      // Per-code CIs are not reported: a single transcript rarely has enough
+      // independent coding segments to estimate them. The overall pooled CI
+      // (below) is where an interval is meaningful.
       disagreements: disagreementPassages(coders, code, coderNames),
     };
   });
@@ -75,7 +92,15 @@ export function analyze(coders) {
   }
   const pooledResult =
     nRaters === 2 ? cohensKappa(pooledArrays[0], pooledArrays[1]) : fleissKappa(pooledArrays);
-  const pooled = { result: pooledResult, interpretation: interpretKappa(pooledResult.kappa) };
+  const pooled = {
+    result: pooledResult,
+    interpretation: interpretKappa(pooledResult.kappa),
+    ci: kappaCI(
+      codeNames.map((code) => coverageByCode.get(code)),
+      pooledResult.kappa,
+      nRaters
+    ),
+  };
 
   // Pairwise Cohen's kappa (only meaningful / reported with 3+ coders).
   let pairwise = [];
@@ -95,6 +120,14 @@ export function analyze(coders) {
           names: [coderNames[i], coderNames[j]],
           result,
           interpretation: interpretKappa(result.kappa),
+          ci: kappaCI(
+            codeNames.map((code) => {
+              const ar = coverageByCode.get(code);
+              return [ar[i], ar[j]];
+            }),
+            result.kappa,
+            2
+          ),
         });
       }
     }

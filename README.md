@@ -17,7 +17,7 @@ That is the whole flow. Nothing is saved; refresh to start over.
 
 ## What you get
 
-- **Inline results**: an overall pooled kappa with its Landis-Koch interpretation and raw agreement, plus a per-code table colour-coded by agreement tier.
+- **Inline results**: an overall pooled kappa with its Landis-Koch interpretation, raw agreement, and a 95% confidence interval, plus a per-code table colour-coded by agreement tier.
 - **Kappa report (xlsx)**: a Summary sheet (headline numbers, pairwise Cohen kappa when you have three coders, the Landis-Koch reference table), a Per-code sheet (one row per code, frozen header, colour-coded), and a Methods text sheet with a draft paragraph auto-filled from your numbers for you to edit.
 - **Calibration document (docx)**: for every code below your threshold, the passages where some but not all coders applied the code, with space to discuss and recalibrate.
 

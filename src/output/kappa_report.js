@@ -5,7 +5,7 @@
 
 import ExcelJS from 'exceljs';
 import { LANDIS_KOCH_TABLE } from '../kappa/interpret.js';
-import { formatKappa, formatPercent, TIER_STYLE } from './format.js';
+import { formatKappa, formatPercent, formatCI, ciMethodLabel, CI_CAVEAT, TIER_STYLE } from './format.js';
 
 export async function buildKappaReport(analysis) {
   const wb = new ExcelJS.Workbook();
@@ -59,15 +59,19 @@ function buildSummarySheet(wb, a) {
   pooledRow.getCell(2).font = { bold: true, ...tierFont(a.pooled.interpretation.tier) };
   pooledRow.getCell(3).fill = tierFill(a.pooled.interpretation.tier);
   ws.addRow(['Raw agreement', formatPercent(a.pooled.result.rawAgreement)]);
+  if (a.pooled.ci) {
+    ws.addRow(['Pooled 95% CI', formatCI(a.pooled.ci), `(${ciMethodLabel(a.pooled.ci)})`]);
+  }
   ws.addRow([]);
 
   if (a.pairwise.length > 0) {
-    const h = ws.addRow(['Pairwise Cohen kappa', 'Kappa', 'Interpretation']);
+    const h = ws.addRow(['Pairwise Cohen kappa', 'Kappa', '95% CI', 'Interpretation']);
     h.font = { bold: true };
     for (const p of a.pairwise) {
       const row = ws.addRow([
         `${p.names[0]} vs ${p.names[1]}`,
         formatKappa(p.result.kappa),
+        formatCI(p.ci),
         p.interpretation.label,
       ]);
       row.getCell(2).fill = tierFill(p.interpretation.tier);
@@ -85,7 +89,9 @@ function buildSummarySheet(wb, a) {
 
   const note = ws.addRow([
     'Methods note: Kappa was computed at the character level over the range coded by all raters. ' +
-      'A pooled kappa concatenates every code into one comparison. See the "Methods text" sheet for a draft you can edit.',
+      'A pooled kappa concatenates every code into one comparison. ' +
+      CI_CAVEAT +
+      ' See the "Methods text" sheet for a draft you can edit.',
   ]);
   note.font = { italic: true };
   ws.mergeCells(`A${note.number}:D${note.number}`);
@@ -165,12 +171,14 @@ export function methodsParagraph(a) {
   const interp = a.pooled.interpretation.label.toLowerCase();
   const agree = formatPercent(a.pooled.result.rawAgreement);
 
+  const ciClause = a.pooled.ci ? `, 95% CI ${formatCI(a.pooled.ci)}` : '';
+
   let text =
     `A single transcript was independently coded by ${a.nRaters} coders ` +
     `(${a.coderNames.join(', ')}). Inter-rater reliability was assessed at the character level ` +
     `across the ${a.commonLength.toLocaleString()}-character range coded by all raters, covering ` +
     `${a.codeCount} codes. ${method} was computed for each code and pooled across all codes by ` +
-    `concatenating the per-code agreement vectors. The pooled kappa was ${pooledK} ` +
+    `concatenating the per-code agreement vectors. The pooled kappa was ${pooledK}${ciClause} ` +
     `(${interp} agreement, Landis and Koch 1977), with ${agree} raw agreement.`;
 
   if (a.pairwise.length > 0) {
@@ -178,6 +186,13 @@ export function methodsParagraph(a) {
       (p) => `${p.names[0]} and ${p.names[1]} (kappa = ${formatKappa(p.result.kappa)})`
     );
     text += ` Pairwise agreement between coders was ${parts.join(', ')}.`;
+  }
+
+  if (a.pooled.ci) {
+    text +=
+      ` Confidence intervals were estimated using the ${ciMethodLabel(a.pooled.ci)} method. ` +
+      'Because agreement was scored at the character level, adjacent positions are correlated, ' +
+      'so these intervals are best read as a lower bound on uncertainty.';
   }
 
   return text;

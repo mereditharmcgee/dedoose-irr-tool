@@ -6,6 +6,8 @@ v1 is deliberately small: Dedoose `.docx` in, Cohen's and Fleiss kappa out, two 
 
 - **More export formats.** NVivo, MAXQDA, or ATLAS.ti coded exports. Each has its own structure; would mean one parser per format behind a shared internal representation.
 - **More agreement statistics.** Krippendorff's alpha and Scott's pi. Krippendorff's alpha in particular handles missing data and more than nominal data, and reviewers sometimes ask for it.
+- **Krippendorff's unitizing alpha (alpha_U).** This is the methodological gold standard for the reliability of *freely unitized* continuous text, which is exactly what Dedoose coding is: coders choose both the boundaries and the codes of segments on a continuum. The current tool reports character-level kappa (a defensible overlap measure) with a segment-clustered bootstrap CI on the overall value; alpha_U would be the rigorous upgrade. It is a real build and belongs here.
+- **Per-code confidence intervals.** Right now the CI is reported only for the overall pooled kappa, because a single transcript rarely has enough independent coding segments to estimate per-code intervals. Multi-transcript analysis (below) is what makes per-code intervals meaningful, so the two go together.
 - **More than three coders.** The Fleiss math already generalises; the UI and outputs assume two or three.
 - **Multi-document analysis.** Aggregate IRR across several transcripts in one run, not one excerpt at a time.
 - **Codebook upload.** Show code definitions alongside results and in the calibration document, so coders calibrate against the written definition.

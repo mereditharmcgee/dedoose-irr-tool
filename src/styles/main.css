@@ -336,6 +336,18 @@ main.wrap {
 .cell-interp {
   font-weight: 600;
 }
+.code-table td.ci-cell {
+  color: var(--ink-soft);
+  font-size: 0.86rem;
+  white-space: nowrap;
+}
+.ci-note {
+  margin: 12px 2px 0;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  max-width: 80ch;
+  line-height: 1.5;
+}
 .tier-green {
   background: var(--tier-green-bg);
   color: var(--tier-green-ink);

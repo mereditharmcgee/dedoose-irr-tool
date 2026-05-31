@@ -71,6 +71,20 @@ describe('End-to-end: two coders (Cohen)', () => {
     expect(analysis.pooled.result.eitherApplied).toBe(690);
   });
 
+  it('attaches a segment-clustered bootstrap CI that brackets the pooled kappa', () => {
+    const ci = analysis.pooled.ci;
+    expect(ci.method).toBe('cluster-bootstrap');
+    expect(ci.segments).toBeGreaterThan(2);
+    expect(ci.lower).toBeLessThan(analysis.pooled.result.kappa);
+    expect(ci.upper).toBeGreaterThan(analysis.pooled.result.kappa);
+  });
+
+  it('does not attach per-code CIs (underpowered on a single transcript)', () => {
+    for (const code of analysis.codes) {
+      expect(code.ci).toBeUndefined();
+    }
+  });
+
   it('surfaces disagreement passages for a low-kappa code', () => {
     const equity = byCode(analysis, 'Social equity');
     // Coder A anchored equity at para 5, coder B at para 6 -> two disagreements.
@@ -94,6 +108,11 @@ describe('End-to-end: three coders (Fleiss)', () => {
   it('uses Fleiss', () => {
     expect(analysis.method).toBe('fleiss');
     expect(analysis.nRaters).toBe(3);
+  });
+
+  it('uses a segment-clustered bootstrap CI for the pooled Fleiss kappa', () => {
+    expect(analysis.pooled.ci.method).toBe('cluster-bootstrap');
+    expect(analysis.pooled.ci.lower).toBeLessThan(analysis.pooled.ci.upper);
   });
 
   it('perfect agreement across three -> 1.0', () => {

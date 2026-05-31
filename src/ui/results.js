@@ -2,7 +2,7 @@
 // below the current calibration threshold are flagged so the user can see what
 // the calibration document will contain.
 
-import { formatKappa, formatPercent, tierClass } from '../output/format.js';
+import { formatKappa, formatPercent, tierClass, CI_CAVEAT } from '../output/format.js';
 
 export function renderResultsTable(container, analysis, threshold) {
   const rateHeaders = analysis.coderNames
@@ -44,7 +44,8 @@ export function renderResultsTable(container, analysis, threshold) {
         </tr>
       </thead>
       <tbody>${rows}</tbody>
-    </table>`;
+    </table>
+    <p class="ci-note">${CI_CAVEAT}</p>`;
 }
 
 function escapeHtml(s) {

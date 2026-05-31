@@ -43,11 +43,23 @@ describe('xlsx kappa report', () => {
       rows[row.getCell(1).value] = row;
     });
 
-    // Code | A% | B% | Kappa | Interp | Raw | both | either  -> kappa is col 4
+    // Code | A% | B% | Kappa(4) | Interp(5) | Raw | both | either
     expect(rows['Legalization timeline'].getCell(4).value).toBe('1.000');
     expect(rows['Market saturation'].getCell(4).value).toBe('—');
     expect(rows['Social equity'].getCell(4).value).toBe('0.375');
     expect(rows['Social equity'].getCell(5).value).toBe('Fair');
+  });
+
+  it('reports the pooled CI on the Summary sheet', async () => {
+    const blob = await buildKappaReport(analysis);
+    const wb = new ExcelJS.Workbook();
+    await wb.xlsx.load(await blob.arrayBuffer());
+    const ws = wb.getWorksheet('Summary');
+    let found = false;
+    ws.eachRow((row) => {
+      if (String(row.getCell(1).value).includes('Pooled 95% CI')) found = true;
+    });
+    expect(found).toBe(true);
   });
 
   it('freezes the header row', async () => {

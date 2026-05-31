@@ -1,5 +1,7 @@
 # Dedoose Inter-Rater Reliability Tool
 
+[![DOI](https://zenodo.org/badge/1254726219.svg)](https://zenodo.org/badge/latestdoi/1254726219)
+
 Calculate Cohen's and Fleiss kappa from coded Dedoose `.docx` exports, entirely in your browser. **Your files never leave your machine.** No upload, no server, no accounts, no telemetry.
 
 This exists because demonstrating inter-rater reliability for a Dedoose-coded transcript is harder than it should be. Dedoose's own Training Center assumes an asymmetric trainer-versus-trainee design that does not fit symmetric IRR, and the alternative is hand-structuring your data for R or ReCal. This tool takes the coded exports you already have and gives you the numbers and a calibration worksheet.
@@ -83,16 +85,11 @@ To instead host this repo on its own GitHub Pages site, activate the deploy work
 
 ## How to cite
 
-A [`CITATION.cff`](CITATION.cff) file is included, so GitHub shows a "Cite this repository" button with formatted citations. Until a DOI is minted, cite the software and version:
+This release is archived on Zenodo with a citable DOI. A [`CITATION.cff`](CITATION.cff) file is included, so GitHub also shows a "Cite this repository" button with formatted citations.
 
-> McGee, M. (2026). *Dedoose Inter-Rater Reliability Tool* (v1.0.0) [Software]. https://github.com/mereditharmcgee/dedoose-irr-tool
+> McGee, M. (2026). *Dedoose Inter-Rater Reliability Tool* (v1.0.0) [Software]. Zenodo. https://doi.org/10.5281/zenodo.20469614
 
-To mint a citable DOI with [Zenodo](https://zenodo.org):
-
-1. Sign in to Zenodo with your GitHub account.
-2. In Zenodo's GitHub settings, flip the toggle for `dedoose-irr-tool` to on.
-3. Create a release on GitHub (for example `v1.0.0`). Zenodo archives that release and issues a DOI. The included `.zenodo.json` supplies the record's title, authors, and license automatically.
-4. Add the DOI badge to the top of this README and the `identifiers:` entry to `CITATION.cff`.
+Use the **concept DOI** [10.5281/zenodo.20469613](https://doi.org/10.5281/zenodo.20469613) to always resolve to the latest version, or the **version DOI** [10.5281/zenodo.20469614](https://doi.org/10.5281/zenodo.20469614) to pin v1.0.0 specifically. Every future GitHub release is archived automatically and gets its own version DOI under the same concept.
 
 ## Contributing
 

@@ -47,16 +47,24 @@ export function parseDedooseXml({ commentsXml, documentXml, name }) {
   const commentsDoc = parser.parseFromString(commentsXml, 'application/xml');
   const commentEls = commentsDoc.getElementsByTagName('w:comment');
   const comments = [];
+  const skipped = []; // why each non-code comment was ignored, for the details panel
 
   for (let i = 0; i < commentEls.length; i++) {
     const el = commentEls[i];
     const id = el.getAttribute('w:id');
     const paras = el.getElementsByTagName('w:p');
-    if (paras.length === 0) continue;
+    if (paras.length === 0) {
+      skipped.push({ id, reason: 'empty comment' });
+      continue;
+    }
 
     const header = paragraphText(paras[0]);
     const m = CODES_RE.exec(header);
-    if (!m) continue; // not a Dedoose code comment
+    if (!m) {
+      // Not a Dedoose code comment (a reviewer note, memo, etc.).
+      skipped.push({ id, reason: 'no "Codes (start-end)" header', sample: header.slice(0, 50) });
+      continue;
+    }
 
     const start = parseInt(m[1], 10);
     const end = parseInt(m[2], 10);
@@ -66,7 +74,10 @@ export function parseDedooseXml({ commentsXml, documentXml, name }) {
       const t = paragraphText(paras[p]).trim();
       if (t) codes.push(t);
     }
-    if (codes.length === 0) continue; // a range with no codes is not useful
+    if (codes.length === 0) {
+      skipped.push({ id, reason: 'range header but no code names' });
+      continue;
+    }
 
     comments.push({ id, start, end, codes });
   }
@@ -95,6 +106,7 @@ export function parseDedooseXml({ commentsXml, documentXml, name }) {
 
   const starts = comments.map((c) => c.start);
   const ends = comments.map((c) => c.end);
+  const anchored = comments.filter((c) => c.id in commentParagraphs).length;
 
   return {
     name: name || null,
@@ -106,6 +118,16 @@ export function parseDedooseXml({ commentsXml, documentXml, name }) {
     // literal intersection of every comment.
     spanStart: starts.length ? Math.min(...starts) : null,
     spanEnd: ends.length ? Math.max(...ends) : null,
+    // Surfaced in the UI "Parsing details" panel so users (and we, when
+    // validating a real export) can confirm the file was read correctly.
+    diagnostics: {
+      totalComments: commentEls.length,
+      codeComments: comments.length,
+      skippedCount: skipped.length,
+      skipped: skipped.slice(0, 25),
+      anchored,
+      hasDocument: !!documentXml,
+    },
   };
 }
 

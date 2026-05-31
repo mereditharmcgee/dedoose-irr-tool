@@ -8,6 +8,7 @@ import { analyze } from './kappa/analyze.js';
 import { createDropZone } from './ui/upload.js';
 import { renderHeadline, renderStats } from './ui/summary.js';
 import { renderResultsTable } from './ui/results.js';
+import { renderParseDetails } from './ui/parse_details.js';
 
 const PREFS = { threshold: 'irr.threshold', theme: 'irr.theme' };
 
@@ -17,6 +18,7 @@ const els = {
   status: document.getElementById('status'),
   results: document.getElementById('results'),
   headline: document.getElementById('headline'),
+  parseDetails: document.getElementById('parse-details'),
   table: document.getElementById('results-table'),
   stats: document.getElementById('summary-stats'),
   xlsxBtn: document.getElementById('download-xlsx'),
@@ -27,6 +29,7 @@ const els = {
 };
 
 let analysis = null;
+let coders = null;
 let threshold = clampThreshold(parseFloat(localStorage.getItem(PREFS.threshold)) || 0.4);
 
 initTheme();
@@ -51,7 +54,7 @@ async function handleFiles(docxFiles, totalCount) {
 
   const stopSpinner = startSpinnerAfter(500);
   try {
-    const coders = await Promise.all(
+    coders = await Promise.all(
       docxFiles.map((file) => parseDedooseDocx(file, stripExt(file.name)))
     );
     analysis = analyze(coders);
@@ -67,6 +70,7 @@ async function handleFiles(docxFiles, totalCount) {
 
 function render() {
   renderHeadline(els.headline, analysis);
+  renderParseDetails(els.parseDetails, coders, analysis);
   renderResultsTable(els.table, analysis, threshold);
   renderStats(els.stats, analysis);
   els.results.hidden = false;

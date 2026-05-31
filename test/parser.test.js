@@ -76,6 +76,16 @@ describe('Dedoose XML parsing', () => {
       'Personal opinions - changed since legalization',
     ]);
   });
+
+  it('reports parsing diagnostics, including skipped non-code comments', () => {
+    const d = parsed.diagnostics;
+    expect(d.totalComments).toBe(3);
+    expect(d.codeComments).toBe(2);
+    expect(d.skippedCount).toBe(1);
+    expect(d.skipped[0].reason).toMatch(/no "Codes/);
+    expect(d.anchored).toBe(2); // both code comments anchored in the document
+    expect(d.hasDocument).toBe(true);
+  });
 });
 
 describe('Dedoose .docx loading (real fixture)', () => {

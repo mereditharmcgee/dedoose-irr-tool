@@ -32,6 +32,25 @@ For the two-coder table, the `abs diff` column compares this tool's kappa to `ir
 
 The three-coder table prints `irr::kappam.fleiss` for each code; compare it against the Fleiss values the tool shows when you load all three fixtures.
 
+## Inspecting a real export (structure only)
+
+To check the parser against a real Dedoose `.docx` without exposing any
+transcript content, two structure-only tools are included. They print comment
+counts, character offsets, code names, and anchoring, and never print passage
+text or participant content:
+
+```bash
+# What did the parser find in each file?
+node docs/validation/inspect_export.mjs "coder1.docx" "coder2.docx"
+
+# Run the full pipeline and print only the kappa results (no passage text)
+node docs/validation/compute_irr.mjs "Coder 1" "coder1.docx" "Coder 2" "coder2.docx"
+```
+
+These were used to validate the parser against a real pair of coded exports:
+all comments parsed, all anchored, and the overlap-of-spans common window
+behaved correctly where the spec's literal reading would have collapsed.
+
 ## Why this is trustworthy
 
 The CSVs come straight from `buildCoverageMatrices` in `src/kappa/analyze.js`, the same function the app uses to feed its own kappa functions. R and the tool therefore operate on identical input, so any difference would be a genuine math discrepancy rather than a data-shaping artifact.

@@ -401,6 +401,10 @@ main.wrap {
   font-size: 0.86rem;
   white-space: nowrap;
 }
+.code-table td.au-cell {
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-soft);
+}
 .ci-note {
   margin: 12px 2px 0;
   font-size: 0.82rem;

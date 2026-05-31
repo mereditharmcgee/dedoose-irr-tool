@@ -43,11 +43,12 @@ describe('xlsx kappa report', () => {
       rows[row.getCell(1).value] = row;
     });
 
-    // Code | A% | B% | Kappa(4) | Interp(5) | Raw | both | either
+    // Code | A% | B% | Kappa(4) | alpha_U(5) | Interp(6) | Raw | both | either
     expect(rows['Legalization timeline'].getCell(4).value).toBe('1.000');
     expect(rows['Market saturation'].getCell(4).value).toBe('—');
     expect(rows['Social equity'].getCell(4).value).toBe('0.375');
-    expect(rows['Social equity'].getCell(5).value).toBe('Fair');
+    expect(rows['Social equity'].getCell(6).value).toBe('Fair');
+    expect(typeof rows['Social equity'].getCell(5).value).toBe('string'); // alpha_U value
   });
 
   it('reports the pooled CI on the Summary sheet', async () => {

@@ -85,6 +85,14 @@ describe('End-to-end: two coders (Cohen)', () => {
     }
   });
 
+  it('attaches overall and per-code unitizing alpha', () => {
+    expect(typeof analysis.pooled.alphaU).toBe('number');
+    expect(analysis.pooled.alphaU).toBeGreaterThan(0);
+    expect(analysis.pooled.alphaU).toBeLessThanOrEqual(1);
+    // Perfect-agreement code -> alpha_U 1.0, matching its kappa.
+    expect(byCode(analysis, 'Legalization timeline').alphaU).toBeCloseTo(1.0, 6);
+  });
+
   it('surfaces disagreement passages for a low-kappa code', () => {
     const equity = byCode(analysis, 'Social equity');
     // Coder A anchored equity at para 5, coder B at para 6 -> two disagreements.

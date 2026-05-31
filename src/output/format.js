@@ -48,3 +48,14 @@ export const TIER_STYLE = {
 export function tierClass(tier) {
   return `tier-${tier}`;
 }
+
+// alpha_U is on the same [-1, 1] scale as kappa, so reuse the kappa formatter.
+export const formatAlphaU = formatKappa;
+
+export const ALPHA_U_NOTE =
+  'αU is Krippendorff’s unitizing alpha, the agreement measure designed for ' +
+  'freely segmented text where coders choose both the boundaries and the codes. ' +
+  'It is generally the more defensible number for this kind of coding than ' +
+  'character-level kappa, which penalizes every character of boundary mismatch. ' +
+  'Both are shown so you can report whichever your venue expects; they usually ' +
+  'agree on the overall picture.';

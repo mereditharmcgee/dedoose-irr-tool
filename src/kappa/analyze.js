@@ -15,6 +15,41 @@ import { cohensKappa } from './cohens.js';
 import { fleissKappa } from './fleiss.js';
 import { interpretKappa } from './interpret.js';
 import { clusterBootstrapKappaCI } from './intervals.js';
+import { alphaUOverall, alphaUCategory } from './alpha_u.js';
+
+// Build the unitizing study (for Krippendorff's alpha_U) from the parsed
+// coders: continuum = common window, each comment/code = a unit. alpha_U
+// requires a coder's same-code segments not to overlap, so we merge overlapping
+// (or touching) same-code intervals per coder first.
+function buildUnitizingStudy(coders, commonStart, commonEnd) {
+  const units = [];
+  coders.forEach((coder, rater) => {
+    const byCode = new Map();
+    for (const comment of coder.comments) {
+      const s = Math.max(comment.start, commonStart);
+      const e = Math.min(comment.end, commonEnd);
+      if (e <= s) continue;
+      for (const code of comment.codes) {
+        if (!byCode.has(code)) byCode.set(code, []);
+        byCode.get(code).push([s, e]);
+      }
+    }
+    for (const [code, intervals] of byCode) {
+      intervals.sort((a, b) => a[0] - b[0]);
+      let [cs, ce] = intervals[0];
+      for (let i = 1; i < intervals.length; i++) {
+        const [s, e] = intervals[i];
+        if (s <= ce) ce = Math.max(ce, e); // overlapping or touching -> merge
+        else {
+          units.push({ offset: cs, length: ce - cs, rater, category: code });
+          [cs, ce] = [s, e];
+        }
+      }
+      units.push({ offset: cs, length: ce - cs, rater, category: code });
+    }
+  });
+  return { B: commonStart, L: commonEnd - commonStart, R: coders.length, units };
+}
 
 // Confidence interval via a bootstrap clustered by coding segment (see
 // intervals.js for why character-level CIs are not used). perCodeArrays is a
@@ -69,7 +104,10 @@ export function analyze(coders) {
     buildCoverageMatrices(coders);
   const nRaters = coders.length;
 
-  // Per-code kappa.
+  // Krippendorff's unitizing alpha runs off the raw coded segments.
+  const unitStudy = buildUnitizingStudy(coders, commonStart, commonEnd);
+
+  // Per-code kappa (and per-code alpha_U).
   const codes = codeNames.map((code) => {
     const arrays = coverageByCode.get(code);
     const result = nRaters === 2 ? cohensKappa(arrays[0], arrays[1]) : fleissKappa(arrays);
@@ -77,6 +115,7 @@ export function analyze(coders) {
       name: code,
       result,
       interpretation: interpretKappa(result.kappa),
+      alphaU: alphaUCategory(unitStudy, code),
       // Per-code CIs are not reported: a single transcript rarely has enough
       // independent coding segments to estimate them. The overall pooled CI
       // (below) is where an interval is meaningful.
@@ -100,6 +139,7 @@ export function analyze(coders) {
       pooledResult.kappa,
       nRaters
     ),
+    alphaU: alphaUOverall(unitStudy),
   };
 
   // Pairwise Cohen's kappa (only meaningful / reported with 3+ coders).

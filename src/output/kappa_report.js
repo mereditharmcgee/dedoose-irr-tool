@@ -5,7 +5,7 @@
 
 import ExcelJS from 'exceljs';
 import { LANDIS_KOCH_TABLE } from '../kappa/interpret.js';
-import { formatKappa, formatPercent, formatCI, ciMethodLabel, CI_CAVEAT, TIER_STYLE } from './format.js';
+import { formatKappa, formatPercent, formatCI, formatAlphaU, ciMethodLabel, CI_CAVEAT, ALPHA_U_NOTE, TIER_STYLE } from './format.js';
 
 export async function buildKappaReport(analysis) {
   const wb = new ExcelJS.Workbook();
@@ -62,6 +62,9 @@ function buildSummarySheet(wb, a) {
   if (a.pooled.ci) {
     ws.addRow(['Pooled 95% CI', formatCI(a.pooled.ci), `(${ciMethodLabel(a.pooled.ci)})`]);
   }
+  if (a.pooled.alphaU !== null && a.pooled.alphaU !== undefined) {
+    ws.addRow(['Overall unitizing alpha (alpha_U)', formatAlphaU(a.pooled.alphaU)]);
+  }
   ws.addRow([]);
 
   if (a.pairwise.length > 0) {
@@ -106,6 +109,7 @@ function buildPerCodeSheet(wb, a) {
     'Code',
     ...rateCols,
     'Kappa',
+    'alpha_U',
     'Interpretation',
     'Raw agreement',
     'Chars all applied',
@@ -129,13 +133,14 @@ function buildPerCodeSheet(wb, a) {
       code.name,
       ...r.rates.map((rate) => formatPercent(rate)),
       formatKappa(r.kappa),
+      formatAlphaU(code.alphaU),
       code.interpretation.label,
       formatPercent(r.rawAgreement),
       r.bothApplied,
       r.eitherApplied,
     ]);
     const kappaCol = 1 + rateCols.length + 1; // 1-based: Code + rates + Kappa
-    const interpCol = kappaCol + 1;
+    const interpCol = kappaCol + 2; // Kappa, alpha_U, then Interpretation
     row.getCell(kappaCol).fill = tierFill(code.interpretation.tier);
     row.getCell(kappaCol).font = tierFont(code.interpretation.tier);
     row.getCell(interpCol).fill = tierFill(code.interpretation.tier);
@@ -193,6 +198,12 @@ export function methodsParagraph(a) {
       ` Confidence intervals were estimated using the ${ciMethodLabel(a.pooled.ci)} method. ` +
       'Because agreement was scored at the character level, adjacent positions are correlated, ' +
       'so these intervals are best read as a lower bound on uncertainty.';
+  }
+
+  if (a.pooled.alphaU !== null && a.pooled.alphaU !== undefined) {
+    text +=
+      ` Krippendorff's unitizing alpha, which is designed for freely segmented text, was ` +
+      `${formatAlphaU(a.pooled.alphaU)} overall.`;
   }
 
   return text;

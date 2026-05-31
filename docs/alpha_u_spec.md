@@ -155,4 +155,7 @@ error corrected in 2004; match the 2004 formula above, which Fixture 1 anchors.)
 4. Surface αU overall alongside the pooled kappa, and per-code αU in the table,
    clearly labelled. Decide presentation (companion to kappa, not replacement).
 
-Nothing above is built yet. This document is the locked target.
+**Status: implemented.** `src/kappa/alpha_u.js` reproduces every fixture above
+exactly (see `test/alpha_u.test.js`), including the overall αU = 0.8591 target.
+αU is wired into `analyze.js` and surfaced as a companion to kappa in the UI and
+the xlsx report. This document remains the locked reference.

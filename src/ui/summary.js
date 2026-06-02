@@ -32,7 +32,7 @@ export function renderStats(container, analysis) {
     { value: analysis.commonLength.toLocaleString(), label: 'characters in common range' },
     ...analysis.coderNames.map((name, i) => ({
       value: analysis.commentCounts[i],
-      label: `comments — ${name}`,
+      label: `${name} comments`,
     })),
   ];
 

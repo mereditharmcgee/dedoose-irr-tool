@@ -40,7 +40,7 @@ export function renderParseDetails(container, coders, analysis) {
 
   container.innerHTML = `
     <details class="parse-details">
-      <summary>Parsing details — confirm your export read correctly</summary>
+      <summary>Parsing details: confirm your export read correctly</summary>
       <div class="parse-grid">${cards}</div>
       <p class="parse-common">
         Compared across coders over characters

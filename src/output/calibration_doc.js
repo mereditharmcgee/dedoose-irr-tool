@@ -140,7 +140,7 @@ export function buildCalibrationDocument(analysis, threshold) {
           children: [
             new TextRun({ text: code.name, bold: true }),
             new TextRun({
-              text: `  —  kappa ${formatKappa(code.result.kappa)} (${code.interpretation.label})`,
+              text: `: kappa ${formatKappa(code.result.kappa)} (${code.interpretation.label})`,
             }),
           ],
         })
